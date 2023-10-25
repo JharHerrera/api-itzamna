@@ -17,6 +17,7 @@ export class loginController {
 
     const user = await ModelLogin.create({ input: result });
 
+    console.log(user);
     if (!user) {
       return res
         .status(400)
@@ -29,18 +30,19 @@ export class loginController {
       return res
         .status(400)
         .send({ status: "Error", message: "Error al inciar sesión" });
+    } else {
+      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET_KEY);
+
+      const cookinOption = {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+        ),
+        path: "/",
+      };
+
+      res.cookie("jwt", token, cookinOption);
+      res.json({ status: "ok", message: "Usuario loggeado", user });
     }
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET_KEY);
-
-    const cookinOption = {
-      expires: new Date(
-        Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
-      ),
-      path: "/",
-    };
-
-    res.cookie("jwt", token, cookinOption);
-    res.json({ status: "ok", message: "Usuario loggeado", redirect: "/user.html" });
 
     // const result = req.body;
     // if (result === 0) {

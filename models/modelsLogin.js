@@ -14,5 +14,9 @@ export class ModelLogin {
     
     return user[0]
   }
+
+  static async getById({id}){
+    
+  }
 }
  
