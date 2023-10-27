@@ -5,9 +5,12 @@
 		},
 		{
 			"path": "../../../Area-trabajo/Cursos/Node"
+		},
+		{
+			"path": "../../API-prueba-cliente"
 		}
 	],
 	"settings": {
-		"liveServer.settings.multiRootWorkspaceName": "itzamna-API"
+		"liveServer.settings.multiRootWorkspaceName": "API-prueba-cliente"
 	}
 }

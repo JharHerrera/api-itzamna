@@ -57,7 +57,7 @@ export class ModelUser {
         [input, id]
       );
     } catch (error) {
-      console.error("Ocurrió un error al actualizar al usuario:", e.message);
+      console.error("Ocurrió un error al actualizar al usuario:", error.message);
     }
 
     if (input.passwordHash) {
@@ -70,7 +70,7 @@ export class ModelUser {
           [newPasswordHash, id]
         );
       } catch (error) {
-        console.error("Ocurrió un error al actualizar al usuario:", e.message);
+        console.error("Ocurrió un error al actualizar al usuario:", error.message);
       }
     }
 
