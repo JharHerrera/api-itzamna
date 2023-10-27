@@ -27,6 +27,7 @@ export class InventoryController {
     const resultFile = req.file;
 
     const item = await ItemModels.create({ resultBody, resultFile });
+    res.json(item)
   }
 
   static async update(req, res) {

@@ -50,9 +50,15 @@ export class ModelUser {
   }
 
   static async update({ id, input }) {
+
+    clean(input)
+
+    console.log(id)
+    console.log(input)
+
     try {
       await connection.query(
-        `UPDATE user SET ? 
+        `UPDATE user SET ?
           WHERE id = UUID_TO_BIN(?);`,
         [input, id]
       );
@@ -73,7 +79,7 @@ export class ModelUser {
         console.error("Ocurrió un error al actualizar al usuario:", error.message);
       }
     }
-
+    
     const [updateUser] = await connection.query(
       `select name, cellphone, email, passwordHash, BIN_TO_UUID(id) id 
         FROM user WHERE id = UUID_TO_BIN(?);`,

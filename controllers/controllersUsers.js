@@ -38,15 +38,15 @@ export class UserController {
   }
 
   static async update(req, res) {
-    const result = req.body
-
-    if (!result) {
+    const result = req.body;
+    const id = req.params;
+    console.log(result);
+    console.log(id);
+    if (!id || !result) {
       return res.status(404).json({ error: JSON.parse(result.error.message) });
     }
 
-    const { id } = req.params;
-
-    const updateUser = await ModelUser.update({ id, input: result});
+    const updateUser = await ModelUser.update({ id, input: result });
     return res.json(updateUser);
   }
 

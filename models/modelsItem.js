@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import fs from "node:fs";
 import { dirname } from "node:path";
 import { clean } from "../utils/cleanObject.js";
+import { join } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -54,7 +55,7 @@ export class ItemModels {
     let buff = fs.readFileSync(path);
     let base64data = buff.toString("base64");
     try {
-      await connection.query(
+      const result = await connection.query(
         `INSERT INTO item (name_item, model, brand, amount, observation, category, name_fiel, imagen, user_id)
           VALUES
             (?, ?, ?, ?, ?, ?, ?, ?, UUID_TO_BIN(?))`,
@@ -70,6 +71,8 @@ export class ItemModels {
           userId,
         ]
       );
+
+      return result
     } catch (e) {
       console.error("Ocurrió un error al guardar el Item: ", e.message);
     }
