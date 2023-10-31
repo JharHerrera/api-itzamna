@@ -19,3 +19,4 @@ itzamnaRoutes.get("/inventory/search", InventoryController.getByData);
 itzamnaRoutes.get("/inventory/filter", InventoryController.getByFilter);
 itzamnaRoutes.post("/inventory", upload, InventoryController.create);
 itzamnaRoutes.patch("/inventory/:id", upload, InventoryController.update);
+itzamnaRoutes.delete("/inventory/:id", InventoryController.delete);

@@ -17,12 +17,6 @@ export class ItemModels {
     return info;
   }
 
-  /* static async getById({ item }) {
-    const [info] = await connection.query(`
-    SELECT * FROM item WHERE id = 1;`);
-    return info;
-  } */
-
   static async getByData({ input }) {
     const info = Object.values(input);
 
@@ -72,14 +66,13 @@ export class ItemModels {
         ]
       );
 
-      return result
+      return result;
     } catch (e) {
       console.error("Ocurrió un error al guardar el Item: ", e.message);
     }
   }
 
   static async update({ id, input, resultFile }) {
-
     clean(input);
 
     try {
@@ -117,5 +110,13 @@ export class ItemModels {
       [id]
     );
     return updateItem[0];
+  }
+
+  static async delete({ id }) {
+    const [info] = await connection.query(`
+      DELETE FROM item WHERE id = ?;`,
+      [id]
+    );
+    return info;
   }
 }

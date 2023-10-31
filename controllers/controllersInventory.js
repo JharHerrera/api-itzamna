@@ -1,4 +1,5 @@
 import { ItemModels } from "../models/modelsItem.js";
+import { validateToken } from "../utils/generateToken.js";
 
 export class InventoryController {
   static async getAll(req, res) {
@@ -25,32 +26,59 @@ export class InventoryController {
     //   console.log(req.file, req.body);
     const resultBody = req.body;
     const resultFile = req.file;
+    const authorizatiion = req.get("authorization");
 
-    const item = await ItemModels.create({ resultBody, resultFile });
-    res.json(item)
+    const pass = validateToken(authorizatiion);
+
+    if (pass === false) {
+      res.status(401).json({ error: "sesion invalida" });
+    } else {
+      const item = await ItemModels.create({ resultBody, resultFile });
+      res.json({ item, message: "chido" });
+    }
   }
 
   static async update(req, res) {
-
     const { id } = req.params;
     const result = req.body;
     const resultFile = req.file;
+    const authorizatiion = req.get("authorization");
 
-    if (!id){
-      return res.status(404).json({ error: JSON.parse(result.error.message)})
+    const pass = validateToken(authorizatiion);
+
+    if (pass === false) {
+      res.status(401).json({ error: "sesion invalida" });
+    } else {
+      if (!id) {
+        return res
+          .status(404)
+          .json({ error: JSON.parse(result.error.message) });
+      }
+
+      const { name_item, model, brand, amount, observation, category } = result;
+      const data = { name_item, model, brand, amount, observation, category };
+
+      const updateItem = await ItemModels.update({
+        id,
+        input: data,
+        resultFile,
+      });
+      res.json({ updateItem, message: "chido" });
     }
-
-    const { name_item, model, brand, amount, observation, category } = result;
-    const data = { name_item, model, brand, amount, observation, category };
-
-
-    const updateItem = await ItemModels.update({
-      id,
-      input: data,
-      resultFile,
-    });
-    return res.json(updateItem);
   }
 
-  static async delete(req, res) {}
+  static async delete(req, res) {
+    const { id } = req.params;
+
+    const authorizatiion = req.get("authorization");
+
+    const pass = validateToken(authorizatiion);
+
+    if(!pass){
+      res.status(401).json({ error: "sesion invalida" });
+    }else{
+      const result = await ItemModels.delete({id})
+      res.json({result, message: 'chido'})
+    }
+  }
 }

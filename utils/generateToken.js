@@ -1,11 +1,23 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 
+export function validateToken(authorizatiion) {
 
-dotenv.config();
+  let token = null;
+  if (authorizatiion && authorizatiion.toLowerCase().startsWith("bearer")) {
+    token = authorizatiion.substring(7);
+  }
 
-export const tokenSing = (user) => {
-  const jwtk = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: "2h" });
+  let decodedToken = {};
 
-  return jwtk
-};
+  try {
+    decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  } catch (error) {
+    console.error("error de token: ", error);
+  }
+
+  if (!token || !decodedToken.id) {
+    return false;
+  } else {
+    return true;
+  }
+}

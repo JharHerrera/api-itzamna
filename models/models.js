@@ -2,6 +2,7 @@ import { json } from "express";
 import { connection } from "../utils/connectionBD.js";
 import { encrypt } from "../utils/securityPass.js";
 import { clean } from "../utils/cleanObject.js";
+import { date } from "zod";
 
 export class ModelUser {
   static async getAll({ result }) {
@@ -70,14 +71,16 @@ export class ModelUser {
       const newPasswordHash = await encrypt(input.passwordHash);
       console.log("del if", newPasswordHash);
       try {
-        await connection.query(
+        const [data] = await connection.query(
           `UPDATE user SET passwordHash = ?
             WHERE id = UUID_TO_BIN(?);`,
           [newPasswordHash, id]
         );
       } catch (error) {
-        console.error("Ocurrió un error al actualizar al usuario:", error.message);
+        return console.error("Ocurrió un error al actualizar al usuario:", error.message);
       }
+    } else {
+        return 
     }
     
     const [updateUser] = await connection.query(

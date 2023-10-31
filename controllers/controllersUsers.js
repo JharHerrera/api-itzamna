@@ -1,5 +1,8 @@
 import { validateUser, validatePartialUser } from "../schema/validation.js";
 import { ModelUser } from "../models/models.js";
+import { validateToken } from "../utils/generateToken.js";
+
+
 
 export class UserController {
   static async getAll(req, res) {
@@ -18,28 +21,36 @@ export class UserController {
 
   static async create(req, res) {
     const result = req.body;
-    const { name, cellphone, email, password } = result;
+    const authorizatiion = req.get("authorization");
 
-    if (!name || !cellphone || !email || !password) {
-      return res
-        .status(400)
-        .send({ status: "Error", message: "Los campos no estan cubiertos" });
+    const pass = validateToken(authorizatiion);
+
+    if (!pass) {
+      res.status(401).json({ error: "sesion invalida" });
+    } else {
+      const { name, cellphone, email, password } = result;
+
+      if (!name || !cellphone || !email || !password) {
+        return res
+          .status(400)
+          .send({ status: "Error", message: "Los campos no estan cubiertos" });
+      }
+
+      const user = await ModelUser.create({ input: result });
+
+      if (!user) {
+        res
+          .status(400)
+          .send({ status: "Error", message: "Error al crear el usuario" });
+      } else {
+        res.json({ status: "ok", message: "User create" });
+      }
     }
-
-    const user = await ModelUser.create({ input: result });
-
-    if (!user) {
-      return res
-        .status(400)
-        .send({ status: "Error", message: "Error al crear el usuario" });
-    }
-
-    res.json({ status: "ok", message: "User create" });
   }
 
   static async update(req, res) {
     const result = req.body;
-    const id = req.params;
+    const {id} = req.params;
     console.log(result);
     console.log(id);
     if (!id || !result) {
