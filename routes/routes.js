@@ -2,6 +2,7 @@ import { Router } from "express";
 import { UserController } from "../controllers/controllersUsers.js";
 import { loginController } from "../controllers/controllersLogin.js";
 import { InventoryController } from "../controllers/controllersInventory.js";
+import { LostController } from "../controllers/controllersLost.js"
 import { upload } from "../middlewares/multer.js";
 
 export const itzamnaRoutes = Router();
@@ -20,3 +21,5 @@ itzamnaRoutes.get("/inventory/filter", InventoryController.getByFilter);
 itzamnaRoutes.post("/inventory", upload, InventoryController.create);
 itzamnaRoutes.patch("/inventory/:id", upload, InventoryController.update);
 itzamnaRoutes.delete("/inventory/:id", InventoryController.delete);
+
+itzamnaRoutes.get("/lost", LostController.getAll);

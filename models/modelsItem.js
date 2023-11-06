@@ -1,19 +1,16 @@
 import { connection } from "../utils/connectionBD.js";
-import { fileURLToPath } from "url";
 import fs from "node:fs";
-import { dirname } from "node:path";
+
 import { clean } from "../utils/cleanObject.js";
-import { join } from "path";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const imgT = {};
+import { helperImg } from "../utils/optimi.js";
 
 export class ItemModels {
   static async getAll({ result }) {
     const [info] = await connection.query(`
       SELECT * FROM item
     `);
+
     return info;
   }
 
@@ -66,6 +63,12 @@ export class ItemModels {
         ]
       );
 
+      const resultExt = await connection.query(
+        `INSERT INTO extraviado (item_id)
+        VALUES (?);`,
+        [result[0].insertId]
+      );
+
       return result;
     } catch (e) {
       console.error("Ocurrió un error al guardar el Item: ", e.message);
@@ -82,7 +85,7 @@ export class ItemModels {
         [input, id]
       );
     } catch (error) {
-      console.error("Ocurrio un error al actualizar el Item: ", error.message);
+      return console.error("Ocurrio un error al actualizar el Item: ", error.message);
     }
 
     if (resultFile) {
@@ -113,10 +116,21 @@ export class ItemModels {
   }
 
   static async delete({ id }) {
-    const [info] = await connection.query(`
-      DELETE FROM item WHERE id = ?;`,
-      [id]
-    );
+    try {
+      const [infoL] = await connection.query(
+        `
+        DELETE FROM extraviado WHERE extrabiado_id = ?;`,
+        [id]
+      );
+
+      const [info] = await connection.query(
+        `
+        DELETE FROM item WHERE id = ?;`,
+        [id]
+      );
+    } catch (error) {
+      console.error("Ocurrió un error al aliminar el Item: ", e.message);
+    }
     return info;
   }
 }
